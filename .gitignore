@@ -47,4 +47,3 @@ tests/*/.deps/
 lib/*
 
 include/stamp-h1
-libtool

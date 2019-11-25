@@ -13,6 +13,7 @@ autom4te.cache
 /autoscan-*.log
 config/compile
 /config.log
+config.status
 config/config.status
 /configure.scan
 /stamp-h1
@@ -45,5 +46,6 @@ src/*/.libs/
 tests/*/.deps/
 
 lib/*
+build/*
 
 include/stamp-h1

@@ -30,14 +30,6 @@
 #include "NLF.h"
 #include "TOLS.h"
 
-using std::cerr;
-using std::cout;
-using std::ifstream;
-using std::ostream;
-using std::endl;
-using std::filebuf;
-using std::flush;
-
 namespace OPTPP {
 
 //-------------------------------------------------------------------------
@@ -47,11 +39,11 @@ namespace OPTPP {
 inline void abort_handler(int code)
 {
   if (code > 1) // code = 2 (Cntl-C signal), 0 (normal), & -1/1 (abnormal)
-    cout << "Signal Caught!" << endl;
+    std::cout << "Signal Caught!" << std::endl;
  
   // Clean up
-  cout << flush; // flush cout or ofstream redirection
-  cerr << flush; // flush cerr or ofstream redirection
+  std::cout << std::flush; // flush cout or ofstream redirection
+  std::cerr << std::flush; // flush cerr or ofstream redirection
   exit(code);
 }
 
@@ -152,9 +144,9 @@ protected:
   /// User defined function to call after each nonlinear iteration
   UPDATEFCN  update_fcn;  
 
-  filebuf file_buffer;
+  std::filebuf file_buffer;
   /// Output file 
-  ostream *optout;
+  std::ostream *optout;
   /// Output file success
   int     optout_fd;
 
@@ -201,7 +193,7 @@ protected:
      else {
        while (in) {
 	 in.getline(str,255);
-	 if(in) *optout << str<< endl;
+	 if(in) *optout << str<< std::endl;
        }
        in.close();
      }
@@ -215,10 +207,10 @@ public:
  * @see OptimizeClass(int n, TOLS t)
  */
   OptimizeClass(): x_optout_fd(-1), dim(0), debug_(0), trace(0) {
-    optout = new ostream(&file_buffer);
+    optout = new std::ostream(&file_buffer);
     file_buffer.open("OPT_DEFAULT.out", std::ios::out);
     if (!file_buffer.is_open() || !optout->good()) {
-      cout << "OptimizeClass:: Can't open default output file\n";
+      std::cout << "OptimizeClass:: Can't open default output file\n";
       optout_fd = 0;
     }
     update_fcn = &opt_default_update_model;
@@ -230,10 +222,10 @@ public:
  */
   OptimizeClass(int n): x_optout_fd(-1), dim(n), sx(n), sfx(n), xprev(n),
     fcn_evals(0), backtracks(0), debug_(0), trace(0)      {
-    optout = new ostream(&file_buffer);
+    optout = new std::ostream(&file_buffer);
     file_buffer.open("OPT_DEFAULT.out", std::ios::out);
     if (!file_buffer.is_open() || !optout->good()) {
-      cout << "OptimizeClass:: Can't open default output file\n";
+      std::cout << "OptimizeClass:: Can't open default output file\n";
       optout_fd = 0;
     }
     update_fcn = &opt_default_update_model;
@@ -245,10 +237,10 @@ public:
  * @param t a TOLS object
  */
   OptimizeClass(TOLS t): x_optout_fd(-1), dim(0), tol(t), debug_(0), trace(0){
-    optout = new ostream(&file_buffer);
+    optout = new std::ostream(&file_buffer);
     file_buffer.open("OPT_DEFAULT.out", std::ios::out);
     if (!file_buffer.is_open() || !optout->good()) {
-      cout << "OptimizeClass:: Can't open default output file\n";
+      std::cout << "OptimizeClass:: Can't open default output file\n";
       optout_fd = 0;
     }
     update_fcn = &opt_default_update_model;
@@ -261,10 +253,10 @@ public:
  */
   OptimizeClass(int n, TOLS t): x_optout_fd(-1), dim(n), tol(t), sx(n),sfx(n),
       xprev(n), fcn_evals(0), backtracks(0), debug_(0), trace(0){
-    optout = new ostream(&file_buffer);
+    optout = new std::ostream(&file_buffer);
     file_buffer.open("OPT_DEFAULT.out", std::ios::out);
     if (!file_buffer.is_open() || !optout->good()) {
-      cout << "OptimizeClass:: Can't open default output file\n";
+      std::cout << "OptimizeClass:: Can't open default output file\n";
       optout_fd = 0;
     }
       update_fcn = &opt_default_update_model;
@@ -351,14 +343,14 @@ public:
       else
          file_buffer.open(filename, std::ios::out);
       if (!file_buffer.is_open() || !optout->good()) {
-	cout << "OptimizeClass::setOutputFile: Can't open " << filename << endl;
+	std::cout << "OptimizeClass::setOutputFile: Can't open " << filename << std::endl;
 	optout_fd = 0;
       }
       else
 	optout_fd = 1;
     }
     else {
-      cout << "OptimizeClass::setOutputFile: File already attached\n";
+      std::cout << "OptimizeClass::setOutputFile: File already attached\n";
       optout_fd = 1;
     }
     return optout_fd;
@@ -367,20 +359,20 @@ public:
   int setOutputFile(int FileDescriptor) { 
 
     optout_fd = FileDescriptor;
-    cerr << "setOutputFile(int FileDescriptor) no longer supported.\n"
+    std::cerr << "setOutputFile(int FileDescriptor) no longer supported.\n"
 	 << "Please use setOutputFile(const char *filename, int append)"
 	 << "or setOutputFile(ostream& fout)."
-	 << endl;
+	 << std::endl;
     optout_fd = 0;
 
     return optout_fd;
   }
 
-  int setOutputFile(ostream& fout) { 
+  int setOutputFile(std::ostream& fout) { 
 
     optout->rdbuf(fout.rdbuf());
     if (!optout->good()) {
-      cout << "OptimizeClass::setOutputFile: Can't open file." << endl;
+      std::cout << "OptimizeClass::setOutputFile: Can't open file." << std::endl;
       optout_fd = 0;
     }
     else

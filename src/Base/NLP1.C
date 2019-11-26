@@ -129,9 +129,9 @@ OptppArray<SymmetricMatrix> NLP1::CONFDHessian(ColumnVector& sx)
 void NLP1::printState(char * s) 
 { // Print out current state: x current, gradient and Function value
   cout << "\n\n=========  " << s << "  ===========\n\n";
-  cout << "\n    i\t    xc \t\t grad  \t\t fcn_accrcy \n";
+  cout << "\n    i           xc         grad   fcn_accrcy\n";
   for (int i=1; i<=dim; i++) 
-    cout << d(i,6) << e(mem_xc(i),12,4)<< "\t" << e(mem_grad(i),12,4) << "\t"
+    cout << d(i,5)<<" " << e(mem_xc(i),12,4)<< " " << e(mem_grad(i),12,4) << " "
          << e(mem_fcn_accrcy(i),12,4) << "\n";
   cout <<"Function Value     = " << e(fvalue,12,4) << "\n";
   double gnorm = Norm2(mem_grad);
@@ -142,10 +142,10 @@ void NLP1::printState(char * s)
 void NLP1::fPrintState(ostream *nlpout, char * s) 
 { // Print out current state: x current, gradient and Function value
   (*nlpout) << "\n\n=========  " << s << "  ===========\n\n";
-  (*nlpout) << "\n    i\t    xc \t\t grad  \t\t fcn_accrcy \n";
+  (*nlpout) << "\n    i           xc         grad   fcn_accrcy\n";
   for (int i=1; i<=dim; i++) 
-    (*nlpout) << d(i,6) << e(mem_xc(i),12,4)<< "\t" 
-              << e(mem_grad(i),12,4) << "\t"
+    (*nlpout) << d(i,5)<<" " << e(mem_xc(i),12,4)<< " " 
+              << e(mem_grad(i),12,4) << " "
               << e(mem_fcn_accrcy(i),12,4) << "\n";
   (*nlpout) <<"Function Value     = " << e(fvalue,12,4) << "\n";
   double gnorm = Norm2(mem_grad);

@@ -546,8 +546,8 @@ void OptNIPSLike::initOpt()
     *optout << "\n\t\t NIPS Iteration Summary\n";
     *optout << "\n\t" << method << " Method with Line Search \n ";
     *optout << "\n  Merit Function =  " << mfcn << " \n";
-    *optout << "\n  Iter    F(x)       mu          alpha"
-            << "      Merit    feval    btracks  Penalty\n\n";
+    *optout << "\n  Iter        F(x)           mu       alpha"
+            << "        Merit Feval Btracks    Penalty\n\n";
 
     *optout << d(0,5) << " "  << e(fprev,12,4) << " " << e(mu_,12,4) 
             << " "    << "\n" << flush;
@@ -797,7 +797,7 @@ void OptNIPSLike::optimize()
       *optout 
         << d(k,5) << " " << e(fprev,12,4) << " " << e(mu_,12,4) 
 	<< e(alpha_dmp*step_length,12,4)  << " " << e(cost,12,4)   
-        << " " << d(fevals,4)  << " " << d(backtracks,3) 
+        << " " << d(fevals,5)  << " " << d(backtracks,7) 
         << " " << e(penalty_,10,2) <<  endl;
 
       // Test for algorithmic convergence

@@ -34,6 +34,8 @@ config/ltsugar.m4
 config/ltversion.m4
 config/lt~obsolete.m4
 
+.vscode/
+
 *.o
 *.lo
 *.la

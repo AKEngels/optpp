@@ -8,6 +8,8 @@
 
 #include <iostream>
 #include <string>
+#include <iomanip>
+#include <sstream>
 
 using std::ostream;
 using std::string;
@@ -60,8 +62,11 @@ e(double val, int w=0, int p=0, char c=' ', opt_mode f = std::ios_base::fixed)
 e(double val, int w=0, int p=0, char c=' ', opt_mode f=0)
 #endif
 {
-  oformatstate fmt('e', w, p, c, f);
-  return format(val, fmt);
+  std::ostringstream out;
+  if (std::abs(val) < 0.001) out << std::scientific;
+  else out<<std::fixed;
+  out<<std::setw(w) << std::setprecision(p)<<std::setfill(c)<<val;
+  return out.str();
 }
 inline string
 #if ( defined(__GNUC__) && __GNUC__ >= 3 || defined (__ICC) )

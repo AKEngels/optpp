@@ -51,3 +51,4 @@ lib/*
 build/*
 
 include/stamp-h1
+include/OPT++_config.h

@@ -319,7 +319,7 @@ int OptNIPSLike::computeStep(ColumnVector sk)
        fcn_evals   = nlp->getFevals();
        grad_evals  = nlp->getGevals();
        backtracks += iter-1;
-       return (-1); // Error
+       return (-2); // Error
     }  
     else if (interpolate) { // use quadratic/cubic interpolation 
 
@@ -770,10 +770,18 @@ void OptNIPSLike::optimize()
 
       // Evaluate the merit function
       setCost (  merit(0,xprev,y,z,s) ); 
-
-      if ((step_type = computeStep(sk)) < 0) {
+      
+      step_type = computeStep(sk);
+      if (step_type == -1) {
 	*optout << "step_type = " << step_type << "\n";
 	setMesg("OptNIPSLike: Maximum number of allowable backtrack iterations");
+	ret_code = step_type;
+        setReturnCode(ret_code);
+	return;
+      }
+      if (step_type == -2) {
+	*optout << "step_type = " << step_type << "\n";
+	setMesg("OptNIPSLike: Minimum step size reached");
 	ret_code = step_type;
         setReturnCode(ret_code);
 	return;

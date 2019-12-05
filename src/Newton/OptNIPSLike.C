@@ -125,15 +125,14 @@ int OptNIPSLike::checkConvg() // check convergence
   if(error <= rftol){
      strcpy(mesg,"L2-Norm  tolerance test passed");
      *optout<<"\nL2-Norm = "<<e(error,12,4)<<"  "<<"ftol = "<<e(ftol,12,4)<<
-              "  (rftol = "<<e(rftol,12,4)<<")\n";
+              "  (rftol = "<<e(rftol,12,4)<<")"<<endl;
      convg_status = 2;
   }
   else{
-     *optout<<" "<<e(error,12,4)<<" "<<e(rftol,12,4)<<"\n";
+     *optout<<" "<<e(error,12,4)<<" "<<e(rftol,12,4)<<endl;
      convg_status = 0;
   }
      
-
   return convg_status;
 }
 

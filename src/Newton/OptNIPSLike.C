@@ -124,12 +124,15 @@ int OptNIPSLike::checkConvg() // check convergence
   rftol = ftol*(1.0+xnorm);
   if(error <= rftol){
      strcpy(mesg,"L2-Norm  tolerance test passed");
-     *optout << "L2 norm = " << e(error,12,4) << "  " << "ftol = " 
-             << e(ftol,12,4) << "\n";
+     *optout<<"\nL2-Norm = "<<e(error,12,4)<<"  "<<"ftol = "<<e(ftol,12,4)<<
+              "  (rftol = "<<e(rftol,12,4)<<")\n";
      convg_status = 2;
   }
-  else
+  else{
+     *optout<<" "<<e(error,12,4)<<" "<<e(rftol,12,4)<<"\n";
      convg_status = 0;
+  }
+     
 
   return convg_status;
 }
@@ -547,7 +550,7 @@ void OptNIPSLike::initOpt()
     *optout << "\n\t" << method << " Method with Line Search \n ";
     *optout << "\n  Merit Function =  " << mfcn << " \n";
     *optout << "\n  Iter        F(x)           mu       alpha"
-            << "        Merit Feval Btracks    Penalty\n\n";
+            << "        Merit Feval Btracks    Penalty      L2-Norm        rftol\n\n";
 
     *optout << d(0,5) << " "  << e(fprev,12,4) << " " << e(mu_,12,4) 
             << " "    << "\n" << flush;
@@ -804,9 +807,9 @@ void OptNIPSLike::optimize()
       // Print iteration summary
       *optout 
         << d(k,5) << " " << e(fprev,12,4) << " " << e(mu_,12,4) 
-	<< e(alpha_dmp*step_length,12,4)  << " " << e(cost,12,4)   
+	      << e(alpha_dmp*step_length,12,4)  << " " << e(cost,12,4)   
         << " " << d(fevals,5)  << " " << d(backtracks,7) 
-        << " " << e(penalty_,10,2) <<  endl;
+        << " " << e(penalty_,10,2);
 
       // Test for algorithmic convergence
       convgd     = checkConvg();

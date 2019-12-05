@@ -552,7 +552,7 @@ void OptNIPSLike::initOpt()
             << "        Merit Feval Btracks    Penalty      L2-Norm        rftol\n\n";
 
     *optout << d(0,5) << " "  << e(fprev,12,4) << " " << e(mu_,12,4) 
-            << " "    << "\n" << flush;
+            << "                                                  " << flush;
 
     hessl = updateH(Hk,initIteration);
 

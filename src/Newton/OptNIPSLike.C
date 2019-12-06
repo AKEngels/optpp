@@ -118,7 +118,7 @@ int OptNIPSLike::checkConvg(real & error_old) // check convergence
   
   Fzero = setupRHS(xc, 0.0);
   error = sqrt(.5*Dot(Fzero,Fzero));
-  if (std::abs(error-error_old) < 0.00001*error){
+  if (std::abs(error-error_old) < 0.000001*error){
     *optout << "no more change in L2 norm"<<endl;
     convg_status = 3;
   }

@@ -10,6 +10,7 @@
 #include <string>
 #include <iomanip>
 #include <sstream>
+#include <cmath>
 
 using std::ostream;
 using std::string;

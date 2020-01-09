@@ -107,7 +107,7 @@ ColumnVector OptNIPSLike::computeSearch2(Matrix& J, const ColumnVector& rhs)
   return result; 
 }
 
-int OptNIPSLike::checkConvg(real & error_old) // check convergence
+int OptNIPSLike::checkConvg() // check convergence
 {
   NLP1* nlp = nlprob();
   ColumnVector xc(nlp->getXc());
@@ -118,10 +118,6 @@ int OptNIPSLike::checkConvg(real & error_old) // check convergence
   
   Fzero = setupRHS(xc, 0.0);
   error = sqrt(.5*Dot(Fzero,Fzero));
-  if (std::abs(error-error_old) < 0.000001*error){
-    *optout << "no more change in L2 norm"<<endl;
-    convg_status = 3;
-  }
   xnorm = Norm2(xc);
   if (me > 0) xnorm  += Norm2(y);
   if (mi > 0) xnorm  += (Norm2(z) + Norm2(s));
@@ -136,8 +132,7 @@ int OptNIPSLike::checkConvg(real & error_old) // check convergence
      *optout<<" "<<e(error,12,4)<<" "<<e(rftol,12,4)<<endl;
      convg_status = 0;
   }
-  
-  error_old = error;
+     
   return convg_status;
 }
 
@@ -711,11 +706,10 @@ void OptNIPSLike::optimize()
     Hk = hessl;
 
     NLP1* nlp  = nlprob();
-    
-    real error_old{0.0};
+
     // Check for convergence. Need to take into account that this is the
     // zeroth iteration
-    convgd = checkConvg(error_old);
+    convgd = checkConvg();
     if (convgd > 0) {
       iter_taken = 0;
       ret_code   = convgd;
@@ -820,17 +814,12 @@ void OptNIPSLike::optimize()
       backtracks_old = backtracks;
 
       // Test for algorithmic convergence
-      convgd     = checkConvg(error_old);
-      if (convgd == 2) {
+      convgd     = checkConvg();
+      if (convgd > 0) {
 	ret_code = convgd;
         setReturnCode(ret_code);
 	setMesg("OptNIPSLike: Algorithm converged");
 	return;
-      }
-      else if (convgd == 3){
-        ret_code = convgd;
-        setReturnCode(ret_code);
-        setMesg("OptNIPSLike: Algorithm doesn't fulfill convergence criterion but won't change.");
       }
 
       if (fevals > maxfev) break;

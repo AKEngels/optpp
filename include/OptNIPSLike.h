@@ -102,7 +102,7 @@ class OptNIPSLike: public OptConstrNewtonLike {
 
   virtual NEWMAT::SymmetricMatrix updateH(NEWMAT::SymmetricMatrix& H, int k) = 0;
 
-  virtual int checkConvg(real & error_old);
+  virtual int checkConvg();
   virtual int checkDeriv();
   virtual int computeStep(NEWMAT::ColumnVector step);
 

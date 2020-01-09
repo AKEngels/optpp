@@ -554,10 +554,10 @@ void OptNIPSLike::initOpt()
     *optout << "\n\t" << method << " Method with Line Search \n ";
     *optout << "\n  Merit Function =  " << mfcn << " \n";
     *optout << "\n  Iter        F(x)           mu       alpha"
-            << "        Merit Feval Btracks    Penalty      L2-Norm        rftol\n\n";
+            << "        Merit Feval Btracks diffBtr    Penalty      L2-Norm        rftol\n\n";
 
     *optout << d(0,5) << " "  << e(fprev,12,4) << " " << e(mu_,12,4) 
-            << "                                                  " << flush;
+            << "                                                          " << flush;
 
     hessl = updateH(Hk,initIteration);
 
@@ -722,7 +722,8 @@ void OptNIPSLike::optimize()
       setReturnCode(ret_code);
       return;
     }
-  
+    
+    int backtracks_old = 0;  // backtracks before last run
     for (k = 1; k <= maxiter; k++) {
       iter_taken   = k;
       
@@ -813,8 +814,10 @@ void OptNIPSLike::optimize()
       *optout 
         << d(k,5) << " " << e(fprev,12,4) << " " << e(mu_,12,4) 
 	      << e(alpha_dmp*step_length,12,4)  << " " << e(cost,12,4)   
-        << " " << d(fevals,5)  << " " << d(backtracks,7) 
+        << " " << d(fevals,5)  << " " << d(backtracks,7) << " "
+        << d(backtracks - backtracks_old, 7)
         << " " << e(penalty_,10,2);
+      backtracks_old = backtracks;
 
       // Test for algorithmic convergence
       convgd     = checkConvg(error_old);

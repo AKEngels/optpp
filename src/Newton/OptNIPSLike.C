@@ -226,7 +226,7 @@ int OptNIPSLike::computeStep(ColumnVector sk)
   bool constraintsExist = nlp->hasConstraints();
   bool modeOverride = nlp->getModeOverride();
 
-  xc = nlp->getXc();
+  xc = nlp->getXc();    // x-values before
 
   p = sk;
   sln = Norm2(p);
@@ -267,7 +267,7 @@ int OptNIPSLike::computeStep(ColumnVector sk)
   {
     iter++;
     // Compute candidate point
-    xt = xc + p.Rows(1, n) * lambda;
+    xt = xc + p.Rows(1, n) * lambda;     // new x values
     if (me > 0)
       yt = y + p.Rows(n + 1, n + me) * lambda;
     if (mi > 0)
@@ -295,7 +295,9 @@ int OptNIPSLike::computeStep(ColumnVector sk)
       nlp->setX(xt);
       if (mfcn == NormFmu)
       {
-        nlp->eval();
+        nlp->eval();                  // calculate new function value
+        real fnew = nlp->getF();      // new function value
+        if (fnew > fprev) continue;   // if new function value is bigger than old one then don't accept this step -> backtrack
       }
       else
       {
@@ -795,7 +797,8 @@ void OptNIPSLike::optimize()
     }
 
     int backtracks_old = 0; // backtracks before last run
-    for (k = 1; k <= maxiter; k++)
+
+    for (k = 1; k <= maxiter; k++)   // iterations
     {
       iter_taken = k;
 
@@ -858,7 +861,7 @@ void OptNIPSLike::optimize()
       // Evaluate the merit function
       setCost(merit(0, xprev, y, z, s));
 
-      step_type = computeStep(sk);
+      step_type = computeStep(sk);    // step !!!
       if (step_type == -1)
       {
         *optout << "step_type = " << step_type << "\n";
@@ -882,7 +885,7 @@ void OptNIPSLike::optimize()
 
       // Accept this step and update the nonlinear model
       xprev = nlp->getXc();
-      fprev = nlp->getF();
+      fprev = nlp->getF();       // function value
       gprev = nlp->getGrad();
       constraintGradientPrev = getConstraintGradient();
       updateModel(k, n, xprev);

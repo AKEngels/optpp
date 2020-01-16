@@ -287,13 +287,18 @@ int OptNIPSLike::computeStep(ColumnVector sk)
           << "  lambda    = " << lambda << "\n";
     }
 
-    // Is this an acceptable step? (estimate without function evaluation)
+    // Is this an acceptable step? (estimate with merit function)
     if (costplus <= cost + dirder_ * lstol * lambda)
     {
       // do not accept step if constraints are not fulfilled
+      bool broken_constraints {false};
       ColumnVector constraint_values = nlp->getConstraints()->getNLConstraintValue();
       for (auto i {0u}; i < constraint_values.size(); ++i) {
-        if (constraint_values(i+1) > getConstraintTolerance()) continue;
+        if (constraint_values(i+1) > getConstraintTolerance()) broken_constraints = true;
+      }
+      if (broken_constraints){
+        backtracks += iter - 1;
+        break; // go to next backtrack
       }
 
       // Yes ! really accept step

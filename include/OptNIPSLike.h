@@ -45,6 +45,7 @@ class OptNIPSLike: public OptConstrNewtonLike {
   real		taumin_; ///< percentage of steplength to boundary
   const real	rho_;    ///< constant set to .5 
   const real	sw_;	///<  constant
+  real    constraintTol;   // hard constraint tolerance for NIPSlike (at the moment only used in QNIPS)
 
  public:
  /**
@@ -134,6 +135,10 @@ class OptNIPSLike: public OptConstrNewtonLike {
  * Sets the percentage of step taken towards the boundary 
  */
   void setStepLengthToBdry(real newTau) { taumin_ = newTau;}
+
+  // getter and setter for constraint tolerance
+  void setConstraintTolerance(real cTol) {constraintTol = cTol;}
+  real getConstraintTolerance() {return constraintTol;}
 
 //-------------------------------------------------------------------
 // These are used by the derived classes 

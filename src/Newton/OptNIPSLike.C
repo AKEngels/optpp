@@ -287,17 +287,21 @@ int OptNIPSLike::computeStep(ColumnVector sk)
           << "  lambda    = " << lambda << "\n";
     }
 
-    // Is this an acceptable step ?
+    // Is this an acceptable step? (estimate without function evaluation)
     if (costplus <= cost + dirder_ * lstol * lambda)
     {
-      // Yes !
+      // do not accept step if constraints are not fulfilled
+      ColumnVector constraint_values = nlp->getConstraints()->getNLConstraintValue();
+      for (auto i {0u}; i < constraint_values.size(); ++i) {
+        if (constraint_values(i+1) > getConstraintTolerance()) continue;
+      }
+
+      // Yes ! really accept step
       step_length = lambda;
       nlp->setX(xt);
       if (mfcn == NormFmu)
       {
-        nlp->eval();                  // calculate new function value
-        real fnew = nlp->getF();      // new function value
-        if (fnew > fprev) continue;   // if new function value is bigger than old one then don't accept this step -> backtrack
+        nlp->eval(); // calculate new function value
       }
       else
       {

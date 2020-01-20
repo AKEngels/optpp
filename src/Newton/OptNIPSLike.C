@@ -226,7 +226,7 @@ int OptNIPSLike::computeStep(ColumnVector sk)
   bool constraintsExist = nlp->hasConstraints();
   bool modeOverride = nlp->getModeOverride();
 
-  xc = nlp->getXc();    // x-values before
+  xc = nlp->getXc(); // x-values before
 
   p = sk;
   sln = Norm2(p);
@@ -267,7 +267,7 @@ int OptNIPSLike::computeStep(ColumnVector sk)
   {
     iter++;
     // Compute candidate point
-    xt = xc + p.Rows(1, n) * lambda;     // new x values
+    xt = xc + p.Rows(1, n) * lambda; // new x values
     if (me > 0)
       yt = y + p.Rows(n + 1, n + me) * lambda;
     if (mi > 0)
@@ -290,15 +290,20 @@ int OptNIPSLike::computeStep(ColumnVector sk)
     // Is this an acceptable step? (estimate with merit function)
     if (costplus <= cost + dirder_ * lstol * lambda)
     {
-      // do not accept step if constraints are not fulfilled
-      bool broken_constraints {false};
-      ColumnVector constraint_values = nlp->getConstraints()->getNLConstraintValue();
-      for (auto i {0u}; i < constraint_values.size(); ++i) {
-        if (constraint_values(i+1) > getConstraintTolerance()) broken_constraints = true;
-      }
-      if (broken_constraints){
-        backtracks += iter - 1;
-        break; // go to next backtrack
+      if (constraintsExist) // do not accept step if constraints are not fulfilled
+      {
+        bool broken_constraints{false};
+        ColumnVector constraint_values = nlp->getConstraints()->getNLConstraintValue();
+        for (auto i{0u}; i < constraint_values.size(); ++i)
+        {
+          if (constraint_values(i + 1) > getConstraintTolerance())
+            broken_constraints = true;
+        }
+        if (broken_constraints)
+        {
+          backtracks += iter - 1;
+          break; // go to next backtrack
+        }
       }
 
       // Yes ! really accept step
@@ -807,7 +812,7 @@ void OptNIPSLike::optimize()
 
     int backtracks_old = 0; // backtracks before last run
 
-    for (k = 1; k <= maxiter; k++)   // iterations
+    for (k = 1; k <= maxiter; k++) // iterations
     {
       iter_taken = k;
 
@@ -870,7 +875,7 @@ void OptNIPSLike::optimize()
       // Evaluate the merit function
       setCost(merit(0, xprev, y, z, s));
 
-      step_type = computeStep(sk);    // step !!!
+      step_type = computeStep(sk); // step !!!
       if (step_type == -1)
       {
         *optout << "step_type = " << step_type << "\n";
@@ -894,7 +899,7 @@ void OptNIPSLike::optimize()
 
       // Accept this step and update the nonlinear model
       xprev = nlp->getXc();
-      fprev = nlp->getF();       // function value
+      fprev = nlp->getF(); // function value
       gprev = nlp->getGrad();
       constraintGradientPrev = getConstraintGradient();
       updateModel(k, n, xprev);
